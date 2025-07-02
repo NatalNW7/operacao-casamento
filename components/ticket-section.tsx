@@ -11,8 +11,8 @@ export function TicketSection() {
 
   const pricingTiers = [
     { quantity: 1, price: 7, label: "Ticket Individual", popular: false },
-    { quantity: 3, price: 6, label: "Pacote Família", popular: true },
-    { quantity: 5, price: 5, label: "Pacote Amigos", popular: false },
+    { quantity: 3, price: 6, label: "Pacote Família", popular: false },
+    { quantity: 5, price: 5, label: "Pacote Amigos", popular: true },
     { quantity: 10, price: 5, label: "Pacote Especial", bonus: 1, popular: false },
   ]
 

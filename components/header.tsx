@@ -16,7 +16,7 @@ export function Header() {
 
           <nav className="hidden md:flex items-center space-x-6">
             <a href="#premio" className="text-gray-700 hover:text-rose-600 transition-colors">
-              Prêmio
+              Prêmios
             </a>
             <a href="#tickets" className="text-gray-700 hover:text-rose-600 transition-colors">
               Tickets

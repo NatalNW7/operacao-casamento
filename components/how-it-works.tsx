@@ -58,9 +58,11 @@ export function HowItWorks() {
         <div className="mt-16 text-center">
           <Card className="max-w-2xl mx-auto bg-gradient-to-r from-rose-600 to-pink-600 border-0 text-white">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold mb-4">Data do Sorteio</h3>
-              <p className="text-lg mb-2">15 de Março de 2025 - 20:00h</p>
-              <p className="opacity-90">Transmissão ao vivo no Instagram @operacaocasamentoBN</p>
+              <h3 className="text-2xl font-bold mb-4">Transmissão ao vivo no Instagram</h3>
+              {/* <h3 className="text-2xl font-bold mb-4">Data do Sorteio</h3> */}
+              <p className="text-lg mb-2">@_barbaragms e @_natanaelw</p>
+              {/* <p className="text-lg mb-2">15 de Março de 2025 - 20:00h</p> */}
+              {/* <p className="opacity-90">Transmissão ao vivo no Instagram @operacaocasamentoBN</p> */}
             </CardContent>
           </Card>
         </div>

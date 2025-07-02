@@ -14,7 +14,7 @@ export function Footer() {
               </div>
             </div>
             <p className="text-gray-400 mb-4">
-              Ajude Natanael e Bárbara a realizarem o sonho do casamento perfeito. Cada ticket comprado nos aproxima
+              Nos ajude a realizar esse sonho do casamento perfeito. Cada ticket comprado nos aproxima
               mais desse momento especial!
             </p>
           </div>
@@ -26,13 +26,17 @@ export function Footer() {
                 <Phone className="h-4 w-4 text-rose-500" />
                 <span className="text-gray-400">(11) 99999-9999</span>
               </div>
-              <div className="flex items-center space-x-3">
+              {/* <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-rose-500" />
                 <span className="text-gray-400">contato@operacaocasamentobn.com</span>
+              </div> */}
+              <div className="flex items-center space-x-3">
+                <Instagram className="h-4 w-4 text-rose-500" />
+                <span className="text-gray-400">@_barbaragms</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Instagram className="h-4 w-4 text-rose-500" />
-                <span className="text-gray-400">@operacaocasamentoBN</span>
+                <span className="text-gray-400">@_natanaelw</span>
               </div>
             </div>
           </div>
@@ -40,7 +44,7 @@ export function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Informações</h4>
             <ul className="space-y-2 text-gray-400">
-              <li>• Sorteio: 15/03/2025</li>
+              {/* <li>• Sorteio: 15/03/2025</li> */}
               <li>• Transmissão ao vivo</li>
               <li>• Pagamento via PIX</li>
               <li>• Entrega dos prêmios em até 7 dias</li>
