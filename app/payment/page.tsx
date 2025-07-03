@@ -8,8 +8,10 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Copy, QrCode, ArrowLeft, CheckCircle } from "lucide-react"
 import { Header } from "@/components/header"
+import { useRouter } from "next/navigation"
 
 export default function PaymentPage() {
+  const router = useRouter()
   const [paymentMethod, setPaymentMethod] = useState<"qr" | "copy">("qr")
   const [copied, setCopied] = useState(false)
 
@@ -28,7 +30,7 @@ export default function PaymentPage() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <Button variant="ghost" className="mb-6">
+          <Button onClick={() => router.back()} variant="ghost" className="mb-6">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar
           </Button>
