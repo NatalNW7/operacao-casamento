@@ -27,7 +27,7 @@ export function Hero() {
           </h1>
 
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Bárbara e eu vamos nos casar! Participe da nossa rifa e concorra a prêmios incríveis enquanto nos
+            Bárbara e Natanael vão se casar! Participe da nossa rifa e concorra a prêmios incríveis enquanto nos
             ajuda a tornar nosso casamento ainda mais especial.
           </p>
 
