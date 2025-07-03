@@ -5,8 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Minus, Plus, Ticket, Gift } from "lucide-react"
+import { useRouter } from "next/navigation"
+
 
 export function TicketSection() {
+  const router = useRouter()
   const [selectedQuantity, setSelectedQuantity] = useState(1)
 
   const pricingTiers = [
@@ -127,7 +130,7 @@ export function TicketSection() {
                 )}
               </div>
 
-              <Button size="lg" className="w-full bg-rose-600 hover:bg-rose-700 text-white text-lg py-6">
+              <Button onClick={() => router.push('/payment')} size="lg" className="w-full bg-rose-600 hover:bg-rose-700 text-white text-lg py-6">
                 Comprar {selectedQuantity} Ticket{selectedQuantity > 1 ? "s" : ""} - R${" "}
                 {calculateTotal(selectedQuantity)}
               </Button>
