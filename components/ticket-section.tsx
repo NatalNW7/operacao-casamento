@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { PaymentModal } from "@/components/payment-modal"
 import { Minus, Plus, Ticket, Gift } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -11,13 +12,28 @@ import { useRouter } from "next/navigation"
 export function TicketSection() {
   const router = useRouter()
   const [selectedQuantity, setSelectedQuantity] = useState(1)
+  const [showPayment, setShowPayment] = useState(false)
 
   const pricingTiers = [
     { quantity: 1, price: 7, label: "Ticket Individual", popular: false },
-    { quantity: 3, price: 6, label: "Pacote Família", popular: false },
-    { quantity: 5, price: 5, label: "Pacote Amigos", popular: true },
+    { quantity: 3, price: 6, label: "Pacote Amigos", popular: true },
+    { quantity: 5, price: 5, label: "Pacote Família", popular: false },
     { quantity: 10, price: 5, label: "Pacote Especial", bonus: 1, popular: false },
   ]
+
+    const getPricing = (quantity: number) => {
+    if (quantity >= 10) {
+      return { price: 5, bonus: Math.floor(quantity / 10), total: quantity * 5 }
+    } else if (quantity >= 5) {
+      return { price: 5, bonus: 0, total: quantity * 5 }
+    } else if (quantity >= 3) {
+      return { price: 6, bonus: 0, total: quantity * 6 }
+    } else {
+      return { price: 7, bonus: 0, total: quantity * 7 }
+    }
+  }
+
+  const pricing = getPricing(selectedQuantity)
 
   const calculateTotal = (qty: number) => {
     if (qty >= 10) return qty * 5
@@ -130,7 +146,7 @@ export function TicketSection() {
                 )}
               </div>
 
-              <Button onClick={() => router.push('/payment')} size="lg" className="w-full bg-rose-600 hover:bg-rose-700 text-white text-lg py-6">
+              <Button onClick={() => setShowPayment(true)} size="lg" className="w-full bg-rose-600 hover:bg-rose-700 text-white text-lg py-6">
                 Comprar {selectedQuantity} Ticket{selectedQuantity > 1 ? "s" : ""} - R${" "}
                 {calculateTotal(selectedQuantity)}
               </Button>
@@ -138,6 +154,12 @@ export function TicketSection() {
           </Card>
         </div>
       </div>
+      <PaymentModal
+        isOpen={showPayment}
+        onClose={() => setShowPayment(false)}
+        ticketQuantity={selectedQuantity}
+        pricing={pricing}
+      />
     </section>
   )
 }
