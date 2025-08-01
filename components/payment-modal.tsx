@@ -7,49 +7,143 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Product } from "@/domain/models"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Copy, QrCode, CheckCircle, Clock } from "lucide-react"
+import Image from "next/image"
 
 interface PaymentModalProps {
   isOpen: boolean
   onClose: () => void
   ticketQuantity: number
-  pricing: {
-    price: number
-    bonus: number
-    total: number
-  }
+  pricing: Product
 }
 
 export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: PaymentModalProps) {
   const [paymentStep, setPaymentStep] = useState<"details" | "pix" | "success">("details")
+  const [pixCode, setPixCode] = useState("")
+  const [pixQrCode, setPixQrCode] = useState("")
+  const [paymentId, setPaymentId] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
     email: "",
+    cpf: "",
   })
 
-  const pixCode =
-    "00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-426614174000520400005303986540" +
-    pricing.total.toFixed(2) +
-    "5802BR5925RIFA SAAS LTDA6009SAO PAULO62070503***6304"
+  const onCloseRefresh = () => {
+    if(paymentStep === 'success'){
+      window.location.reload()
+    }
+    onClose()
+  }
 
   const handleCopyPix = () => {
     navigator.clipboard.writeText(pixCode)
   }
 
   const handlePaymentConfirm = () => {
-    setPaymentStep("pix")
+    handlePixQrCode()
   }
 
-  const simulatePayment = () => {
-    setTimeout(() => {
-      setPaymentStep("success")
-    }, 3000)
+  const simulatePayment = async () => {
+    try {
+      const response = await fetch(`/api/payment/simulate?paymentId=${paymentId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const billing = await response.json()
+      console.log('payment simulated')
+      console.log(billing.data)
+      if(billing.data.status === "PAID"){
+        setPaymentStep("success")
+      }
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Ocorreu um erro inesperado ao simular pagamento.")
+    }
   }
+
+  const handlePixQrCode = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch("/api/payment?type=qrcode", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user: {
+            name: customerInfo.name,
+            whatsapp: customerInfo.phone,
+            email: customerInfo.email,
+            cpf: customerInfo.cpf,
+          },
+          product: {
+            ...pricing,
+          },
+        }),
+      })
+
+      const billing = await response.json()
+
+      if (!response.ok) {
+        throw new Error(billing.error || "Falha ao criar o pagamento.")
+      }
+      console.log(billing.data)
+      setPaymentId(billing.data.id)
+      setPixCode(billing.data.brCode)
+      setPixQrCode(billing.data.brCodeBase64)
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Ocorreu um erro inesperado ao gerar o Pix QR Code.")
+    } finally {
+      setIsLoading(false)
+      setPaymentStep("pix")
+    }
+  }
+  // const handlePayment = async () => {
+  //   setIsLoading(true)
+  //   try {
+  //     const response = await fetch("/api/payment", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         user: {
+  //           name: customerInfo.name,
+  //           whatsapp: customerInfo.phone,
+  //           email: customerInfo.email,
+  //           cpf: customerInfo.cpf,
+  //         },
+  //         product: {
+  //           ...pricing,
+  //           quantity: ticketQuantity,
+  //         },
+  //       }),
+  //     })
+
+  //     const billing = await response.json()
+
+  //     if (!response.ok) {
+  //       throw new Error(billing.error || "Falha ao criar o pagamento.")
+  //     }
+  //     console.log(billing)
+  //     if (billing.data) {
+  //       window.location.href = billing.data.url
+  //     }
+  //   } catch (error) {
+  //     alert(error instanceof Error ? error.message : "Ocorreu um erro inesperado.")
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onCloseRefresh}>
       <DialogContent className="max-w-md">
         {paymentStep === "details" && (
           <>
@@ -85,6 +179,15 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
                     value={customerInfo.name}
                     onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
                     placeholder="Seu nome completo"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="cpf">CPF</Label>
+                  <Input
+                    id="cpf"
+                    value={customerInfo.cpf}
+                    onChange={(e) => setCustomerInfo({ ...customerInfo, cpf: e.target.value })}
+                    placeholder="000.000.000-00"
                   />
                 </div>
                 <div>
@@ -155,7 +258,8 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
 
                 <TabsContent value="qr" className="text-center">
                   <div className="w-48 h-48 bg-white border-2 border-gray-200 rounded-lg mx-auto flex items-center justify-center">
-                    <QrCode className="h-32 w-32 text-gray-400" />
+                    {/* <QrCode  className="h-32 w-32 text-gray-400" /> */}
+                    <Image src={pixQrCode} width={400} height={400} alt="QR Code"></Image>
                   </div>
                   <p className="text-sm text-gray-600 mt-2">Escaneie com seu app do banco</p>
                 </TabsContent>
@@ -214,7 +318,7 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
                 <p>✅ Participação confirmada no sorteio</p>
               </div>
 
-              <Button onClick={onClose} className="w-full">
+              <Button onClick={onCloseRefresh} className="w-full">
                 Fechar
               </Button>
             </div>

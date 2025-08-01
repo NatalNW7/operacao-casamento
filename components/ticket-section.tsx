@@ -6,11 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { PaymentModal } from "@/components/payment-modal"
 import { Minus, Plus, Ticket, Gift } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 
 export function TicketSection() {
-  const router = useRouter()
   const [selectedQuantity, setSelectedQuantity] = useState(1)
   const [showPayment, setShowPayment] = useState(false)
 
@@ -21,26 +19,19 @@ export function TicketSection() {
     { quantity: 10, price: 5, label: "Pacote Especial", bonus: 1, popular: false },
   ]
 
-    const getPricing = (quantity: number) => {
-    if (quantity >= 10) {
-      return { price: 5, bonus: Math.floor(quantity / 10), total: quantity * 5 }
-    } else if (quantity >= 5) {
-      return { price: 5, bonus: 0, total: quantity * 5 }
-    } else if (quantity >= 3) {
-      return { price: 6, bonus: 0, total: quantity * 6 }
+    const getPricing = (selectedQuantity: number) => {
+    if (selectedQuantity >= 10) {
+      return { quantity: selectedQuantity, price: 5, bonus: Math.floor(selectedQuantity / 10), total: selectedQuantity * 5, name: "Pacote Especial", id: "PACOTE_ESPECIAL" }
+    } else if (selectedQuantity >= 5) {
+      return { quantity: selectedQuantity, price: 5, bonus: 0, total: selectedQuantity * 5, name: "Pacote Família", id: "PACOTE_FAMILIA" }
+    } else if (selectedQuantity >= 3) {
+      return { quantity: selectedQuantity, price: 6, bonus: 0, total: selectedQuantity * 6, name: "Pacote Amigos", id: "PACOTE_AMIGOS" }
     } else {
-      return { price: 7, bonus: 0, total: quantity * 7 }
+      return { quantity: selectedQuantity, price: 7, bonus: 0, total: selectedQuantity * 7, name: "Ticket Individual", id: "TICKET_INDIVIDUAL" }
     }
   }
 
   const pricing = getPricing(selectedQuantity)
-
-  const calculateTotal = (qty: number) => {
-    if (qty >= 10) return qty * 5
-    if (qty >= 5) return qty * 5
-    if (qty >= 3) return qty * 6
-    return qty * 7
-  }
 
   const getEffectiveTickets = (qty: number) => {
     if (qty >= 10) return qty + Math.floor(qty / 10)
@@ -134,7 +125,7 @@ export function TicketSection() {
 
               <div className="text-center mb-6">
                 <div className="text-2xl font-bold text-rose-600 mb-2">
-                  Total: R$ {calculateTotal(selectedQuantity)}
+                  Total: R$ {pricing.total}
                 </div>
                 {getEffectiveTickets(selectedQuantity) > selectedQuantity && (
                   <div className="text-green-600 font-semibold">
@@ -148,7 +139,7 @@ export function TicketSection() {
 
               <Button onClick={() => setShowPayment(true)} size="lg" className="w-full bg-rose-600 hover:bg-rose-700 text-white text-lg py-6">
                 Comprar {selectedQuantity} Ticket{selectedQuantity > 1 ? "s" : ""} - R${" "}
-                {calculateTotal(selectedQuantity)}
+                {pricing.total}
               </Button>
             </CardContent>
           </Card>
