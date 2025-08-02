@@ -1,5 +1,5 @@
 import {Product, User} from './models'
-import PaymentGateway from '@/infra/payment-gateway'
+import PaymentGateway from '@/config/payment-gateway'
 
 export default class PaymentService {
     paymentGateway = PaymentGateway()

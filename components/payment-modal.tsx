@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Product } from "@/domain/models"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Copy, QrCode, CheckCircle, Clock } from "lucide-react"
+import { Copy, CheckCircle, Clock } from "lucide-react"
 import Image from "next/image"
 
 interface PaymentModalProps {
@@ -57,8 +57,11 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
       })
 
       const billing = await response.json()
-      console.log('payment simulated')
-      console.log(billing.data)
+
+      if (!response.ok) {
+        alert("Falha ao simular pagamento.")
+      }
+
       if(billing.data.status === "PAID"){
         setPaymentStep("success")
       }
@@ -91,9 +94,9 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
       const billing = await response.json()
 
       if (!response.ok) {
-        throw new Error(billing.error || "Falha ao criar o pagamento.")
+        alert("Falha ao gerar o Pix QR Code.")
       }
-      console.log(billing.data)
+
       setPaymentId(billing.data.id)
       setPixCode(billing.data.brCode)
       setPixQrCode(billing.data.brCodeBase64)
@@ -104,43 +107,6 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
       setPaymentStep("pix")
     }
   }
-  // const handlePayment = async () => {
-  //   setIsLoading(true)
-  //   try {
-  //     const response = await fetch("/api/payment", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         user: {
-  //           name: customerInfo.name,
-  //           whatsapp: customerInfo.phone,
-  //           email: customerInfo.email,
-  //           cpf: customerInfo.cpf,
-  //         },
-  //         product: {
-  //           ...pricing,
-  //           quantity: ticketQuantity,
-  //         },
-  //       }),
-  //     })
-
-  //     const billing = await response.json()
-
-  //     if (!response.ok) {
-  //       throw new Error(billing.error || "Falha ao criar o pagamento.")
-  //     }
-  //     console.log(billing)
-  //     if (billing.data) {
-  //       window.location.href = billing.data.url
-  //     }
-  //   } catch (error) {
-  //     alert(error instanceof Error ? error.message : "Ocorreu um erro inesperado.")
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
 
   return (
     <Dialog open={isOpen} onOpenChange={onCloseRefresh}>
@@ -218,6 +184,9 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
               >
                 Continuar para PIX
               </Button>
+              <div className="text-xs text-gray-500 text-center">
+                Seus dados serão usados gerar o comprovante de pagamento
+              </div>
             </div>
           </>
         )}
