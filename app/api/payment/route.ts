@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import PaymentService from "@/domain/payment"
+import PaymentService from "@/domain/payment-service"
 import { Product, User } from "@/domain/models"
 
 export async function POST(request: NextRequest) {
@@ -19,11 +19,15 @@ export async function POST(request: NextRequest) {
     
     if (isQrCode) {
       const pixQrCode = await paymentService.createPaymentWithQrCode(user, product)
+      await paymentService.savePayment(pixQrCode, user, product)
       return NextResponse.json( pixQrCode )
     }
-
+    
     const billing = await paymentService.createPayment(user, product)
-
+    if(!billing.error){
+      return NextResponse.json({ error: billing.error })
+    }
+    await paymentService.savePayment(billing, user, product)
     return NextResponse.json( billing )
   } catch (error) {
     console.error("Payment creation failed:", error)

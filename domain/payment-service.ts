@@ -1,5 +1,8 @@
-import {Product, User} from './models'
+import { CreateBillingResponse, CreatePixQrCodeResponse, IBilling, IPixQrCode } from 'abacatepay-nodejs-sdk/dist/types'
+import {Payment, Product, User} from './models'
 import PaymentGateway from '@/config/payment-gateway'
+import UserService from './user-service'
+import database from '@/config/database/database-connection'
 
 export default class PaymentService {
     paymentGateway = PaymentGateway()
@@ -58,5 +61,47 @@ export default class PaymentService {
 
     private calculateTotalQuantity(product: Product){
         return product.bonus + product.quantity
+    }
+
+    async savePayment(
+        billing: any, 
+        user: User, 
+        product: Product
+    ){
+        const userService = new UserService();
+        let userDB = await userService.getOrCreate(user)
+        const payment: Payment = {
+            id: billing.data.id,
+            status: billing.data.status,
+            userId: userDB.id,
+            productId: product.id,
+            devMode: billing.data.devMode,
+            paidAmount: billing.data.amount,
+            quantityWithBonus: this.calculateTotalQuantity(product),
+        }
+
+        try{
+            await database.query(
+                `INSERT INTO payments ("id", "userId", "productId", "status", "paidAmount", "devMode", "quantityWithBonus") VALUES
+                ('${payment.id}',${payment.userId},'${payment.productId}','${payment.status}',${payment.paidAmount},${payment.devMode},${payment.quantityWithBonus});`
+            );
+        } catch (error){
+            throw error;
+        }
+    }
+
+    async getPayments(): Promise<Payment[]> {
+        const payments = await database.query("SELECT * FROM payments;")
+        return payments.rows
+    }
+
+    async updatePaymentStatus(id: string, status: string) {
+        try {
+            await database.query(
+                `UPDATE payments SET status = '${status}', "updateAt" = NOW() WHERE id = '${id}';`
+            )
+        } catch (error) {
+            throw error
+        }
     }
 }

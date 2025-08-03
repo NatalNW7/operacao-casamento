@@ -185,7 +185,7 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
                 Continuar para PIX
               </Button>
               <div className="text-xs text-gray-500 text-center">
-                Seus dados serão usados gerar o comprovante de pagamento
+                Seus dados serão usados para gerar o comprovante de pagamento
               </div>
             </div>
           </>

@@ -9,6 +9,7 @@
     "start": "next start",
     "migration:create": "node-pg-migrate -m config/database/migrations create",
     "migration:up": "node-pg-migrate -m config/database/migrations --envPath .env.local up",
+    "migration:down": "node-pg-migrate -m config/database/migrations --envPath .env.local down",
     "wait-for-db": "node config/scripts/wait-for-database.js",
     "services:up": "docker compose -f infra/compose.yml up -d",
     "services:down": "docker compose -f infra/compose.yml down",
@@ -57,6 +58,7 @@
     "next": "15.2.4",
     "next-themes": "^0.4.4",
     "node-pg-migrate": "^8.0.3",
+    "nodemailer": "^7.0.5",
     "pg": "^8.16.3",
     "react": "^19",
     "react-day-picker": "8.10.1",
@@ -72,6 +74,7 @@
   },
   "devDependencies": {
     "@types/node": "^22",
+    "@types/nodemailer": "^6.4.17",
     "@types/pg": "^8.15.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -79,6 +82,7 @@
     "eslint-config-next": "15.4.5",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import PaymentService from "@/domain/payment"
+import PaymentService from "@/domain/payment-service"
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +16,18 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json( response )
   } catch (error) {
-    console.error("Payment creation failed:", error)
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred"
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const paymentService = new PaymentService()
+    const response = await paymentService.getPayments()
+    
+    return NextResponse.json( response )
+  } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred"
     return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
