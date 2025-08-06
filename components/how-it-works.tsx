@@ -16,7 +16,7 @@ export function HowItWorks() {
     {
       icon: Users,
       title: "Receba confirmação",
-      description: "Seus números da sorte serão enviados por WhatsApp e email imediatamente.",
+      description: "Você recebera confirmação de participação da rifa por email imediatamente.",
     },
     {
       icon: Gift,

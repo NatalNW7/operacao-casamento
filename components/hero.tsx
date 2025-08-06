@@ -35,7 +35,7 @@ export function Hero() {
             <Card className="p-6 bg-white/60 backdrop-blur-sm border-rose-200">
               <Gift className="h-8 w-8 text-rose-500 mx-auto mb-3" />
               <h3 className="font-semibold text-gray-900 mb-2">Prêmios Incríveis</h3>
-              <p className="text-gray-600 text-sm">Fones Apple Premium + Secador Profissional</p>
+              <p className="text-gray-600 text-sm">Fone Apple Premium + Secador Profissional</p>
             </Card>
 
             <Card className="p-6 bg-white/60 backdrop-blur-sm border-rose-200">

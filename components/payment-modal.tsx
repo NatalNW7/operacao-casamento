@@ -240,7 +240,7 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
               </Button>
 
               <div className="text-xs text-gray-500 text-center">
-                Após o pagamento, você receberá seus números por WhatsApp
+                Após o pagamento, você receberá confirmação no email
               </div>
             </div>
           </>

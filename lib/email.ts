@@ -14,7 +14,8 @@ export async function sendEmail(transaction: eventPaid) {
       }
     });
 
-    const emailBody = transaction.data.pixQrCode.status === 'PAID' ? paymentSuccessTemplate(transaction) : paymentFailedTemplate(transaction);
+    const date = new Date().toLocaleDateString('pt-br')
+    const emailBody = transaction.data.pixQrCode.status === 'PAID' ? paymentSuccessTemplate(transaction, date) : paymentFailedTemplate(transaction, date);
 
     await trasporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -27,7 +28,7 @@ export async function sendEmail(transaction: eventPaid) {
   }
 }
 
-function paymentSuccessTemplate(transaction: eventPaid): string {
+function paymentSuccessTemplate(transaction: eventPaid, date: string): string {
   return `
     <div style="font-family: Arial, sans-serif; color: #333;">
       <h2 style="color: #2e7d32;">✅ Pagamento Confirmado!</h2>
@@ -36,21 +37,24 @@ function paymentSuccessTemplate(transaction: eventPaid): string {
       <ul>
         <li><strong>ID da Transação:</strong> ${transaction.data.pixQrCode.id}</li>
         <li><strong>Valor:</strong> ${centsToBRL(transaction.data.pixQrCode.amount)}</li>
+        <li><strong>Data:</strong> ${date}</li>
       </ul>
-      <p>Obrigado por nos ajudar 😁! Bárbara e Natanael.</p>
+      <p>Obrigado por nos ajudar 😁!</p>
+      <p> Bárbara e Natanael.</p>
     </div>
   `;
 }
 
-function paymentFailedTemplate(transaction: eventPaid): string {
+function paymentFailedTemplate(transaction: eventPaid, date: string): string {
   return `
     <div style="font-family: Arial, sans-serif; color: #333;">
       <h2 style="color: #c62828;">❌ Houve um problema com o seu pagamento!</h2>
       <p>Olá, ${transaction.data.pixQrCode.customer.metadata.name}.</p>
-      <p>Infelizmente, seu pagamento não pôde ser processado.</p>
+      <p>Infelizmente, seu pagamento não pôde ser processado 😥.</p>
       <ul>
         <li><strong>ID da Transação:</strong> ${transaction.data.pixQrCode.id}</li>
         <li><strong>Valor:</strong> ${centsToBRL(transaction.data.pixQrCode.amount)}</li>
+        <li><strong>Data:</strong> ${date}</li>
       </ul>
       <p>Por favor, tente novamente ou entre em contato conosco.</p>
       <p>Bárbara e Natanael.</p>

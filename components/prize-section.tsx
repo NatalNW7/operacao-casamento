@@ -21,7 +21,7 @@ export function PrizeSection() {
                     <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                       <Headphones className="h-16 w-16 text-gray-700" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Fones Apple Premium</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Fone Apple Premium</h3>
                     <p className="text-gray-600 mb-4">Qualidade de som excepcional com cancelamento de ruído ativo</p>
                   </div>
 
