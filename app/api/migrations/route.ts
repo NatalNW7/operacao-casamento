@@ -1,7 +1,6 @@
-import { runner } from "node-pg-migrate"
 import database from "@/config/database/database-connection";
-import { join } from "node:path";
 import { NextResponse } from "next/server";
+import migrate from "@/lib/migrations";
 
 export async function GET(request: Request) {
     let dbClient;
@@ -35,15 +34,4 @@ export async function POST(request: Request) {
     } finally {
         dbClient?.end();
     }
-}
-
-async function migrate(client: any, isDryRun: boolean) {
-    return await runner({
-        dbClient: client,
-        dryRun: isDryRun,
-        dir: join(process.cwd(), "config", "database", "migrations"),
-        direction: "up",
-        verbose: true,
-        migrationsTable: "pgmigrations"
-    });
 }
