@@ -1,4 +1,3 @@
-import { CreateBillingResponse, CreatePixQrCodeResponse, IBilling, IPixQrCode } from 'abacatepay-nodejs-sdk/dist/types'
 import {Payment, Product, User} from './models'
 import PaymentGateway from '@/config/payment-gateway'
 import UserService from './user-service'
@@ -22,12 +21,6 @@ export default class PaymentService {
 
         return pixQrCode
     }
-
-    // private calculateTotalWithBonus(product: Product){
-    //     const quantityTotal = this.calculateTotalQuantity(product)
-    //     const bonusPrice = product.price*product.bonus
-        
-    // }
 
     async createPayment(user: User, product: Product) {
         const billing = await this.paymentGateway.billing.create({
@@ -90,8 +83,8 @@ export default class PaymentService {
         }
     }
 
-    async getPayments(): Promise<Payment[]> {
-        const payments = await database.query("SELECT * FROM payments;")
+    async getPayments(devMode: boolean = true): Promise<Payment[]> {
+        const payments = await database.query(`SELECT * FROM payments WHERE "devMode" = ${devMode};`)
         return payments.rows
     }
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -24,7 +24,6 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
   const [pixCode, setPixCode] = useState("")
   const [pixQrCode, setPixQrCode] = useState("")
   const [paymentId, setPaymentId] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
@@ -34,7 +33,10 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
 
   const onCloseRefresh = () => {
     if(paymentStep === 'success'){
-      window.location.reload()
+      setPixCode("")
+      setPixQrCode("")
+      setPaymentId("")
+      setPaymentStep("details")
     }
     onClose()
   }
@@ -55,15 +57,9 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
           "Content-Type": "application/json",
         },
       })
-
-      const billing = await response.json()
-
+      
       if (!response.ok) {
         alert("Falha ao simular pagamento.")
-      }
-
-      if(billing.data.status === "PAID"){
-        setPaymentStep("success")
       }
     } catch (error) {
       alert(error instanceof Error ? error.message : "Ocorreu um erro inesperado ao simular pagamento.")
@@ -71,7 +67,6 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
   }
 
   const handlePixQrCode = async () => {
-    setIsLoading(true)
     try {
       const response = await fetch("/api/payment?type=qrcode", {
         method: "POST",
@@ -103,10 +98,29 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
     } catch (error) {
       alert(error instanceof Error ? error.message : "Ocorreu um erro inesperado ao gerar o Pix QR Code.")
     } finally {
-      setIsLoading(false)
       setPaymentStep("pix")
     }
   }
+
+  useEffect(() => {
+    if (paymentStep !== "pix" || !paymentId) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/payment?paymentId=${paymentId}`);
+        const payment = await res.json();
+
+        if (payment.data.status === "PAID") {
+          clearInterval(interval);
+          setPaymentStep("success");
+        }
+      } catch (err) {
+        console.error("Erro ao verificar status do pagamento:", err);
+      }
+    }, 5000); // check every 5 seconds
+
+    return () => clearInterval(interval); // cleanup
+  }, [paymentStep, paymentId]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onCloseRefresh}>
@@ -121,7 +135,7 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
               <Card>
                 <CardContent className="pt-4">
                   <div className="flex justify-between items-center mb-2">
-                    <span>Números:</span>
+                    <span>Tickets:</span>
                     <span className="font-semibold">{ticketQuantity}</span>
                   </div>
                   {pricing.bonus > 0 && (
@@ -202,7 +216,7 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
                 <CardContent className="pt-4 text-center">
                   <div className="text-2xl font-bold text-green-600 mb-1">R$ {pricing.total}</div>
                   <div className="text-sm text-gray-600">
-                    {ticketQuantity} números {pricing.bonus > 0 && `+ ${pricing.bonus} bônus`}
+                    {ticketQuantity} tickets {pricing.bonus > 0 && `+ ${pricing.bonus} bônus`}
                   </div>
                 </CardContent>
               </Card>
@@ -257,24 +271,24 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
 
               <div>
                 <h3 className="font-semibold text-lg">Parabéns!</h3>
-                <p className="text-gray-600">Seus números foram reservados com sucesso</p>
+                <p className="text-gray-600">Seus tickets foram reservados com sucesso</p>
               </div>
 
               <Card>
                 <CardContent className="pt-4">
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span>Números comprados:</span>
+                      <span>Tickets comprados:</span>
                       <span className="font-semibold">{ticketQuantity}</span>
                     </div>
                     {pricing.bonus > 0 && (
                       <div className="flex justify-between">
-                        <span>Números bônus:</span>
+                        <span>Tickets bônus:</span>
                         <span className="font-semibold text-green-600">+{pricing.bonus}</span>
                       </div>
                     )}
                     <div className="flex justify-between border-t pt-2">
-                      <span>Total de números:</span>
+                      <span>Total de tickets:</span>
                       <span className="font-bold">{ticketQuantity + pricing.bonus}</span>
                     </div>
                   </div>
@@ -283,7 +297,6 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
 
               <div className="text-sm text-gray-600">
                 <p>✅ Comprovante enviado por e-mail</p>
-                <p>✅ Números enviados via WhatsApp</p>
                 <p>✅ Participação confirmada no sorteio</p>
               </div>
 

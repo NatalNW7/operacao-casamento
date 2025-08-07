@@ -25,10 +25,6 @@ export function Header() {
               Como Funciona
             </a>
           </nav>
-
-          <Button className="md:hidden" variant="ghost" size="sm">
-            <Menu className="h-5 w-5" />
-          </Button>
         </div>
       </div>
     </header>
