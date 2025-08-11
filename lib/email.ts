@@ -1,5 +1,5 @@
 import { eventPaid } from "@/domain/models";
-import { centsToBRL } from "./utils";
+import { centsToBRL } from "./money-conversor";
 import nodemailer from 'nodemailer'
 
 export async function sendEmail(transaction: eventPaid) {
