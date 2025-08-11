@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     }
 
     const paymentService = new PaymentService()
-    const response = await paymentService.paymentGateway.pixQrCode.simulatePayment({id: paymentId})
+    const response = await paymentService.simulatePayment(parseInt(paymentId))
 
     return NextResponse.json( response )
   } catch (error) {
@@ -23,8 +23,12 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const paymentService = new PaymentService()
-    const response = await paymentService.getPayments()
+    let devMode = request.nextUrl.searchParams.get('devMode');
+    if(!devMode) {
+      devMode = "true"
+    }
+    const paymentService = new PaymentService();
+    const response = await paymentService.getPayments(devMode === "true");
     
     return NextResponse.json( response )
   } catch (error) {

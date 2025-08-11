@@ -16,19 +16,17 @@ export async function POST(request: NextRequest) {
     }
     
     const paymentService = new PaymentService()
-    
-    // if (isQrCode) {
     const pixQrCode = await paymentService.createPaymentWithQrCode(user, product)
-    await paymentService.savePayment(pixQrCode, user, product)
+    await paymentService.savePayment(
+      {
+        id: pixQrCode.id.toString(),
+        status: pixQrCode.status,
+        amount: pixQrCode.transaction_amount
+      }, 
+      user, 
+      product
+    )
     return NextResponse.json( pixQrCode )
-    // }
-    
-    // const billing = await paymentService.createPayment(user, product)
-    // if(!billing.error){
-    //   return NextResponse.json({ error: billing.error })
-    // }
-    // await paymentService.savePayment(billing, user, product)
-    // return NextResponse.json( billing )
   } catch (error) {
     console.error("Payment creation failed:", error)
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred"
@@ -47,14 +45,11 @@ export async function GET(request: NextRequest) {
     }
     
     const paymentService = new PaymentService()
-    const billing = await paymentService.paymentGateway.pixQrCode.check({
-      id: paymentId
-    })
+    const billing = await paymentService.checkPaymentStatus(parseInt(paymentId))
 
     return NextResponse.json( billing )
   } catch (error) {
-    console.error("Payment creation failed:", error)
-    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred"
-    return NextResponse.json({ error: errorMessage }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

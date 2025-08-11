@@ -68,7 +68,7 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
 
   const handlePixQrCode = async () => {
     try {
-      const response = await fetch("/api/payment?type=qrcode", {
+      const response = await fetch("/api/payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,9 +92,9 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
         alert("Falha ao gerar o Pix QR Code.")
       }
 
-      setPaymentId(billing.data.id)
-      setPixCode(billing.data.brCode)
-      setPixQrCode(billing.data.brCodeBase64)
+      setPaymentId(billing.id)
+      setPixCode(billing.point_of_interaction.transaction_data.qr_code)
+      setPixQrCode(billing.point_of_interaction.transaction_data.qr_code_base64)
     } catch (error) {
       alert(error instanceof Error ? error.message : "Ocorreu um erro inesperado ao gerar o Pix QR Code.")
     } finally {
@@ -110,7 +110,7 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
         const res = await fetch(`/api/payment?paymentId=${paymentId}`);
         const payment = await res.json();
 
-        if (payment.data.status === "PAID") {
+        if (payment.status === "approved") {
           clearInterval(interval);
           setPaymentStep("success");
         }
@@ -242,7 +242,7 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
                 <TabsContent value="qr" className="text-center">
                   <div className="w-48 h-48 bg-white border-2 border-gray-200 rounded-lg mx-auto flex items-center justify-center">
                     {/* <QrCode  className="h-32 w-32 text-gray-400" /> */}
-                    <Image src={pixQrCode} width={400} height={400} alt="QR Code"></Image>
+                    <Image src={`data:image/png;base64,${pixQrCode}`} width={400} height={400} alt="QR Code"></Image>
                   </div>
                   <p className="text-sm text-gray-600 mt-2">Escaneie com seu app do banco</p>
                 </TabsContent>

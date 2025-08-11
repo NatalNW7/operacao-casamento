@@ -4,7 +4,7 @@ import { User, UserDTO } from "./models";
 export default class UserService {
     async getOrCreate(user: User): Promise<UserDTO> {
         let userDb = await this.get(user.cpf);
-        console.log(userDb)
+
         if(!userDb){
             return await this.create(user);
         }

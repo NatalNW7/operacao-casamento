@@ -3,49 +3,33 @@ import PaymentGateway from '@/config/payment-gateway'
 import UserService from './user-service'
 import database from '@/config/database/database-connection'
 
+interface BillingData {
+    id: string,
+    status: string,
+    amount: number,
+}
+
 export default class PaymentService {
     paymentGateway = PaymentGateway()
 
     async createPaymentWithQrCode(user: User, product: Product) {
-        const pixQrCode = await this.paymentGateway.pixQrCode.create({
-            amount: this.convertPriceToCents(product.total),
-            expiresIn: 300, // 5 minutes
+        const pixQrCode = await this.paymentGateway.createPixOrder({
+            amount: product.total,
             description: `Compra de rifa ${product.name}`,
-            customer: {
-                name: user.name,
-                cellphone: user.whatsapp,
-                email: user.email,
-                taxId: user.cpf,
-            },
-        })
+            name: user.name,
+            email: user.email,
+            cpf: user.cpf
+        });
 
         return pixQrCode
     }
 
-    async createPayment(user: User, product: Product) {
-        const billing = await this.paymentGateway.billing.create({
-            frequency: 'ONE_TIME',
-            methods: ['PIX'],
-            products: [
-                {
-                    externalId: product.id,
-                    name: product.name,
-                    description: `Compra de rifa ${product.name}`,
-                    price: this.convertPriceToCents(product.price),
-                    quantity: this.calculateTotalQuantity(product),
-                },
-            ],
-            returnUrl: 'http://localhost:3000/',
-            completionUrl: 'http://localhost:3000/payment/success',
-            customer: {
-                name: user.name,
-                cellphone: user.whatsapp,
-                email: user.email,
-                taxId: user.cpf,
-            },
-        })
+    async checkPaymentStatus(id: number) {
+        return await this.paymentGateway.checkPaymentStatus(id)
+    }
 
-        return billing
+    async simulatePayment(id: number) {
+        return await this.paymentGateway.simulatePayment(id);
     }
 
     private convertPriceToCents(price: number){
@@ -57,19 +41,19 @@ export default class PaymentService {
     }
 
     async savePayment(
-        billing: any, 
+        billing: BillingData, 
         user: User, 
         product: Product
     ){
         const userService = new UserService();
         let userDB = await userService.getOrCreate(user)
         const payment: Payment = {
-            id: billing.data.id,
-            status: billing.data.status,
+            id: billing.id,
+            status: billing.status,
             userId: userDB.id,
             productId: product.id,
-            devMode: billing.data.devMode,
-            paidAmount: billing.data.amount,
+            devMode: false,
+            paidAmount: billing.amount,
             quantityWithBonus: this.calculateTotalQuantity(product),
         }
 
