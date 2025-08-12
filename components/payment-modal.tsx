@@ -248,10 +248,10 @@ export function PaymentModal({ isOpen, onClose, ticketQuantity, pricing }: Payme
                 </TabsContent>
               </Tabs>
 
-              <Button onClick={simulatePayment} className="w-full bg-transparent" variant="outline">
+              {/* <Button onClick={simulatePayment} className="w-full bg-transparent" variant="outline">
                 <Clock className="h-4 w-4 mr-2" />
                 Simular Pagamento (Demo)
-              </Button>
+              </Button> */}
 
               <div className="text-xs text-gray-500 text-center">
                 Após o pagamento, você receberá confirmação no email
