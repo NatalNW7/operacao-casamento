@@ -36,18 +36,19 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const paymentId = request.nextUrl.searchParams.get('paymentId')
+    const paymentId = request.nextUrl.searchParams.get('paymentId');
     if (!paymentId) {
         return NextResponse.json(
         { error: "paymentId is required" },
         { status: 400 }
-      )
+      );
     }
     
-    const paymentService = new PaymentService()
+    const paymentService = new PaymentService();
     const billing = await paymentService.checkPaymentStatus(parseInt(paymentId))
+    // const billing = await paymentService.getPaymentInfo(paymentId);
 
-    return NextResponse.json( billing )
+    return NextResponse.json( billing );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
     return NextResponse.json({ error: errorMessage }, { status: 500 });

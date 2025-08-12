@@ -1,7 +1,8 @@
-import {Payment, Product, User} from './models'
+import {Payment, PaymentInfo, Product, User} from './models'
 import PaymentGateway from '@/config/payment-gateway'
 import UserService from './user-service'
 import database from '@/config/database/database-connection'
+import { getProduct } from './product-service'
 
 interface BillingData {
     id: string,
@@ -72,11 +73,33 @@ export default class PaymentService {
         return payments.rows
     }
 
+    async getPayment(id: string): Promise<Payment> {
+        const payment = await database.query(`SELECT * FROM payments WHERE id = '${id}';`);
+        return payment.rows[0];
+    }
+    async getPaymentInfo(id: string): Promise<PaymentInfo> {
+        const payment = await this.getPayment(id);
+        const product = await getProduct(payment.productId);
+        const user = await new UserService().getById(payment.userId.toString()); 
+        const paymentInfo: PaymentInfo = {
+            id: payment.id,
+            devMode: payment.devMode,
+            paidAmount: payment.paidAmount,
+            quantityWithBonus: payment.quantityWithBonus,
+            status: payment.status,
+            product: product,
+            user: user,
+        }
+        return paymentInfo;
+    }
+
     async updatePaymentStatus(id: string, status: string) {
         try {
             await database.query(
                 `UPDATE payments SET status = '${status}', "updateAt" = NOW() WHERE id = '${id}';`
-            )
+            );
+
+            return await this.getPaymentInfo(id);
         } catch (error) {
             throw error
         }

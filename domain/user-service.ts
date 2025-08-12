@@ -34,4 +34,15 @@ export default class UserService {
            throw error; 
         }
     }
+
+    async getById(id: string): Promise<UserDTO> {
+        try {
+            const user = await database.query(
+                `SELECT * FROM users WHERE id = '${id}';`
+            );
+            return user.rows[0];
+        } catch (error) {
+           throw error; 
+        }
+    }
 }
