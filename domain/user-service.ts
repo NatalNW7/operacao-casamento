@@ -4,7 +4,7 @@ import { User, UserDTO } from "./models";
 export default class UserService {
     async getOrCreate(user: User): Promise<UserDTO> {
         let userDb = await this.get(user.cpf);
-        console.log(userDb)
+
         if(!userDb){
             return await this.create(user);
         }
@@ -28,6 +28,17 @@ export default class UserService {
         try {
             const user = await database.query(
                 `SELECT * FROM users WHERE cpf = '${cpf}';`
+            );
+            return user.rows[0];
+        } catch (error) {
+           throw error; 
+        }
+    }
+
+    async getById(id: string): Promise<UserDTO> {
+        try {
+            const user = await database.query(
+                `SELECT * FROM users WHERE id = '${id}';`
             );
             return user.rows[0];
         } catch (error) {

@@ -1,11 +1,10 @@
-import AbacatePay from "abacatepay-nodejs-sdk"
+import MercadoPagoAPI from "@/lib/mercadopago-api";
 
 export default function PaymentGateway(){
     const apiKey = process.env.PAYMENT_GATEWAY_KEY;
-
     if (!apiKey) {
         throw new Error("PAYMENT_GATEWAY_KEY environment variable is not set.");
     }
 
-    return AbacatePay(apiKey);
+    return new MercadoPagoAPI(apiKey);
 }

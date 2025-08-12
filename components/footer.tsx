@@ -1,6 +1,9 @@
-import { Heart, Instagram, Phone } from "lucide-react"
+"use client";
+import { Heart, Instagram, Mail, Phone } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export function Footer() {
+  const router = useRouter()
   return (
     <footer className="bg-gray-900 text-white py-12">
       <div className="container mx-auto px-4">
@@ -24,23 +27,19 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-rose-500" />
-                <span className="text-gray-400">+55 (11) 91333-9320</span>
+                <span className="text-gray-400" onClick={() => router.push("https://wa.me/+5511913339320?text=Ol%C3%A1!%20Gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20a%20rifa")}>+55 (11) 91333-9320</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-rose-500" />
-                <span className="text-gray-400">+55 (11) 97783-8246</span>
+                <span className="text-gray-400" onClick={() => router.push("https://wa.me/+5511977838246?text=Ol%C3%A1!%20Gostaria%20de%20mais%20informa%C3%A7%C3%B5es%20sobre%20a%20rifa")}>+55 (11) 97783-8246</span>
               </div>
               {/* <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-rose-500" />
                 <span className="text-gray-400">contato@operacaocasamentobn.com</span>
               </div> */}
               <div className="flex items-center space-x-3">
-                <Instagram className="h-4 w-4 text-rose-500" />
-                <span className="text-gray-400">@_barbaragms</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Instagram className="h-4 w-4 text-rose-500" />
-                <span className="text-gray-400">@_natanaelw</span>
+                <Mail className="h-4 w-4 text-rose-500" />
+                <span className="text-gray-400">natanaelweslley1@gmail.com</span>
               </div>
             </div>
           </div>

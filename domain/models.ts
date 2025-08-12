@@ -37,29 +37,12 @@ export interface Payment {
     status: string
 }
 
-export type eventPaid = {
-    data: {
-        payment: {
-        amount: number,
-        fee: number,
-        method: string
-        },
-        pixQrCode: {
-        amount: number,
-        customer: {
-            id: string,
-            metadata: {
-            cellphone: string,
-            email: string,
-            name: string,
-            taxId: string
-            }
-        },
-        id: string,
-        kind: string,
-        status: string
-        }
-    },
-    devMode: boolean,
-    event: string
+export interface PaymentInfo {
+    id: string
+    user: User
+    product: ProductDTO
+    paidAmount: number
+    quantityWithBonus: number
+    devMode: boolean
+    status: string
 }
