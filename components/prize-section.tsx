@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Headphones, Wind } from "lucide-react"
+import Image from "next/image"
 
 export function PrizeSection() {
   return (
@@ -19,15 +20,29 @@ export function PrizeSection() {
                 <div className="grid md:grid-cols-2 gap-8 p-8">
                   <div className="text-center">
                     <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-                      <Headphones className="h-16 w-16 text-gray-700" />
+                      {/* <Headphones className="h-16 w-16 text-gray-700" /> */}
+                      <Image
+                        src="/fone-apple.jpg"
+                        alt="Foto Fone Apple Premium"
+                        width={200}
+                        height={200}
+                        className="rounded-lg"
+                      />
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">Fone Apple Premium</h3>
-                    <p className="text-gray-600 mb-4">Qualidade de som excepcional com cancelamento de ruído ativo</p>
+                    <p className="text-gray-600 mb-4">Qualidade de som excepcional com cancelamento de ruído passivo</p>
                   </div>
 
                   <div className="text-center">
                     <div className="w-32 h-32 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-                      <Wind className="h-16 w-16 text-blue-700" />
+                      {/* <Wind className="h-16 w-16 text-blue-700" /> */}
+                      <Image
+                        src="secador-de-cabelo.jpg"
+                        alt="Foto Secador de Cabelo"
+                        width={200}
+                        height={200}
+                        className="rounded-lg"
+                      />
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">Secador Profissional</h3>
                     <p className="text-gray-600 mb-4">Tecnologia iônica para cabelos mais saudáveis e brilhantes</p>
