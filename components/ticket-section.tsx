@@ -55,7 +55,7 @@ export function TicketSection() {
         }
 
         const tickets = await response.json();
-        setTotalTickets(tickets.count);
+        setTotalTickets(tickets.sum);
       } catch (error) {
         console.log(
           error instanceof Error

@@ -108,10 +108,9 @@ export default class PaymentService {
     async getTotalTickets() {
         try {
             const totalTickets = await database.query(
-                `SELECT COUNT(*) FROM payments WHERE status = 'approved';`
+                `SELECT SUM("quantityWithBonus") FROM payments WHERE status = 'approved';`
             );
-
-            return totalTickets.rows[0]
+            return totalTickets.rows[0];
         } catch (error) {
             throw error
         }
