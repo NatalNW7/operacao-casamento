@@ -115,8 +115,7 @@ export function TicketSection() {
                 <CardHeader className="text-center pb-4">
                   <CardTitle className="text-lg">{tier.label}</CardTitle>
                   <div className="text-3xl font-bold text-rose-600">
-                    R$ {tier.price}
-                    <span className="text-sm text-gray-500">/ticket</span>
+                    R$ {tier.quantity * tier.price}
                   </div>
                 </CardHeader>
 
@@ -134,7 +133,9 @@ export function TicketSection() {
                   </div>
 
                   <div className="text-sm text-gray-600 mb-4">
-                    Total: R$ {tier.quantity * tier.price}
+                    {tier.price < 7 
+                    ? `R$ ${tier.price} cada ticket` 
+                    : <br></br>}
                     {tier.bonus && <div className="text-green-600 font-semibold">+{tier.bonus} ticket GRÁTIS!</div>}
                   </div>
 
