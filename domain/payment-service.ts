@@ -104,4 +104,16 @@ export default class PaymentService {
             throw error
         }
     }
+
+    async getTotalTickets() {
+        try {
+            const totalTickets = await database.query(
+                `SELECT COUNT(*) FROM payments WHERE status = 'approved';`
+            );
+
+            return totalTickets.rows[0]
+        } catch (error) {
+            throw error
+        }
+    }
 }

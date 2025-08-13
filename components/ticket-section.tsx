@@ -1,16 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { PaymentModal } from "@/components/payment-modal"
 import { Minus, Plus, Ticket, Gift } from "lucide-react"
+import { winChance } from "@/lib/utils"
 
 
 export function TicketSection() {
   const [selectedQuantity, setSelectedQuantity] = useState(1)
   const [showPayment, setShowPayment] = useState(false)
+  const [totalTickets, setTotalTickets] = useState<null | number>(null)
 
   const pricingTiers = [
     { quantity: 1, price: 7, label: "Ticket Individual", popular: false },
@@ -36,6 +38,52 @@ export function TicketSection() {
   const getEffectiveTickets = (qty: number) => {
     if (qty >= 10) return qty + Math.floor(qty / 10)
     return qty
+  }
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const response = await fetch(`/api/tickets`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          cache: "reload"
+        });
+
+        if (!response.ok) {
+          console.log("Falha ao trazer total de tickets.");
+          return;
+        }
+
+        const tickets = await response.json();
+        setTotalTickets(tickets.count);
+      } catch (error) {
+        console.log(
+          error instanceof Error
+            ? error.message
+            : "Ocorreu um erro inesperado ao trazer total de tickets."
+        );
+      }
+    };
+
+    if (totalTickets === null) {
+      fetchTickets();
+    }
+  }, [totalTickets]);
+
+
+  const getWinChanceText = () => {
+    const effectiveTickets = getEffectiveTickets(selectedQuantity);
+    const winChancePercent = winChance(effectiveTickets, totalTickets);
+    if(totalTickets <= 0 && effectiveTickets < 10){
+      return ""
+    }
+    if(totalTickets <= 0){
+      return `Você receberá ${effectiveTickets} tickets!`
+    }
+    if(effectiveTickets < 10){
+      return `Você terá ${winChancePercent}% de chance de ganhar!`
+    }
+    return `Você receberá ${effectiveTickets} tickets, com ${winChancePercent}% de chance de ganhar!`
   }
 
   return (
@@ -127,9 +175,11 @@ export function TicketSection() {
                 <div className="text-2xl font-bold text-rose-600 mb-2">
                   Total: R$ {pricing.total}
                 </div>
+                <div className="text-green-600 font-semibold">
+                  {getWinChanceText()}
+                </div>
                 {getEffectiveTickets(selectedQuantity) > selectedQuantity && (
                   <div className="text-green-600 font-semibold">
-                    Você receberá {getEffectiveTickets(selectedQuantity)} tickets!
                     <span className="text-sm block">
                       ({getEffectiveTickets(selectedQuantity) - selectedQuantity} grátis)
                     </span>
