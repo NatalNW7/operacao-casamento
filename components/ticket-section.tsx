@@ -90,13 +90,13 @@ export function TicketSection() {
     <section id="tickets" className="py-20 px-4">
       <div className="container mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Escolha Seus Tickets</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Já já sai o ganhador!</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Quanto mais tickets, maior é a sua chance de ganhar! Aproveite nossas ofertas especiais.
+            Estamos organizando o sorteio.
           </p>
         </div>
 
-        <div className="max-w-6xl mx-auto">
+        {/* <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             {pricingTiers.map((tier) => (
               <Card
@@ -194,14 +194,14 @@ export function TicketSection() {
               </Button>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
       </div>
-      <PaymentModal
+      {/* <PaymentModal
         isOpen={showPayment}
         onClose={() => setShowPayment(false)}
         ticketQuantity={selectedQuantity}
         pricing={pricing}
-      />
+      /> */}
     </section>
   )
 }

@@ -189,6 +189,7 @@ def send_email(user, has_ticket):
             server.starttls()
             server.login(sender, password)
             server.sendmail(sender, receiver, message.as_string())
+        print(f'Enviado para {user_name}')
     except Exception as e:
         print(f"Erro ao enviar para {user_name}: {e}")
 
@@ -209,10 +210,10 @@ for cancelled_payment in cancelled_payments.to_dict(orient='records'):
     user = users[users['id'] == user_id].to_dict(orient='records')[0]
     user_has_not_ticket = approved_payments[approved_payments['userId'] == user_id].dropna().empty
     if(user_has_not_ticket):
-        print('Não tem ticket', user['name'])
+        # print('Não tem ticket', user['name'])
         users_without_ticket.append(user_id)
     else:
-        print('Já tem ticket', user['name'])
+        # print('Já tem ticket', user['name'])
         users_with_ticket.append(user_id)
 
 
@@ -223,15 +224,18 @@ for user in users.to_dict(orient='records'):
         users_without_ticket.append(user['id'])
 
 for user in users_with_ticket:
+    print(user)
     user_info = users[users['id'] == user_id].to_dict(orient='records')[0]
-    send_email(user_info, True)
-    pausa = random.randint(5, 15)
-    print(f"Aguardando {pausa}s antes do próximo envio...")
-    time.sleep(pausa)
+    print(f'Enviando para {user_info['name']}')
+    # send_email(user_info, True)
+    # pausa = random.randint(5, 15)
+    # print(f"Aguardando {pausa}s antes do próximo envio...")
+    # time.sleep(pausa)
 
 for user in users_without_ticket:
     user_info = users[users['id'] == user_id].to_dict(orient='records')[0]
-    send_email(user_info, False)
-    pausa = random.randint(5, 15)
-    print(f"Aguardando {pausa}s antes do próximo envio...")
-    time.sleep(pausa)
+    print(f'Enviando para {user_info['name']}')
+    # send_email(user_info, False)
+    # pausa = random.randint(5, 15)
+    # print(f"Aguardando {pausa}s antes do próximo envio...")
+    # time.sleep(pausa)
